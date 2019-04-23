@@ -176,7 +176,7 @@ void Process_Exec_Cmd(char *cmd)
 			int a = 2000 + d.Year - c;
 			int m = d.Month + 12 * c - 2;
 			d.WeekDay = (d.Date + a + a / 4 - a / 100 + a / 400 + (31 * m) / 12)
-															% 7;
+			% 7;
 
 			d.WeekDay = d.WeekDay == 0 ? 7 : d.WeekDay;
 
@@ -218,7 +218,7 @@ void Process_Exec_Cmd(char *cmd)
 		}
 
 		if (pstep == NULL)
-			return;
+		return;
 
 		p = strchr(p, ':') + 1;
 
@@ -229,11 +229,11 @@ void Process_Exec_Cmd(char *cmd)
 		int en = atoi(p);
 
 		if (en)
-			Stepper_continuousMove(pstep, dir);
+		Stepper_continuousMove(pstep, dir);
 		//StepperTelescope_moveEnable(pstep, dir);
 		else
-			//StepperTelescope_stop(pstep);
-			Stepper_stopMove(pstep);
+		//StepperTelescope_stop(pstep);
+		Stepper_stopMove(pstep);
 
 	}
 
@@ -287,14 +287,14 @@ void Process_Exec_Cmd(char *cmd)
 		{
 
 			if (p == NULL)
-				return;
+			return;
 
 			double ra = atof(p);
 
 			p = strchr(p, '/') + 1;
 
 			if (p == NULL)
-				return;
+			return;
 
 			double dec = atof(p);
 
@@ -401,14 +401,13 @@ void Process_Axis_Cmd(char * cmd)
 		{
 			double pos = atof(cmd + 3);
 
-
-			if(cmd[2]=='a')
+			if (cmd[2] == 'a')
 			{
 
 				pos = getRelativeAngleFromAh(pos, needsReturnedMode(pos));
 
 			}
-			else if(cmd[2]=='d')
+			else if (cmd[2] == 'd')
 			{
 
 				pos = getRelativeAngleFromDec(pos, 0);
@@ -424,13 +423,13 @@ void Process_Axis_Cmd(char * cmd)
 			goto ok;
 
 		}
-		break;
+			break;
 		default:
 			break;
 		}
 
 	}
-	break;
+		break;
 
 	case 'c': //Calibrate axis
 	{
@@ -460,7 +459,7 @@ void Process_Axis_Cmd(char * cmd)
 		goto ok;
 
 	}
-	break;
+		break;
 
 	case 'i': //Increment position
 	{
@@ -495,7 +494,7 @@ void Process_Axis_Cmd(char * cmd)
 		goto ok;
 
 	}
-	break;
+		break;
 
 	case 'm': //Rotate axis
 	{
@@ -542,7 +541,7 @@ void Process_Axis_Cmd(char * cmd)
 		goto ok;
 
 	}
-	break;
+		break;
 
 	case 'p': //Read Position
 	{
@@ -567,7 +566,7 @@ void Process_Axis_Cmd(char * cmd)
 			break;
 		}
 
-		Serial_printf(pserial, "%lf\r\n",Stepper_getRelativePos(pstepper));
+		Serial_printf(pserial, "%lf\r\n", Stepper_getRelativePos(pstepper));
 
 		switch (cmd[2])
 		//Return Format
@@ -577,7 +576,7 @@ void Process_Axis_Cmd(char * cmd)
 		}
 
 	}
-	break;
+		break;
 
 	case 's': //Stop axis rotation
 	{
@@ -602,7 +601,7 @@ void Process_Axis_Cmd(char * cmd)
 		goto ok;
 
 	}
-	break;
+		break;
 
 	}
 
@@ -626,15 +625,15 @@ void Process_GPS_Param_Cmd(char * cmd)
 		{
 			if (cmd[3] == 's') //Locs command
 			{
-				if(strstr(cmd+3,"CMD") != NULL)
+				if (strstr(cmd + 3, "CMD") != NULL)
 				{
-					Flag_enable_LOC_GPS_sync=0;
+					Flag_enable_LOC_GPS_sync = 0;
 					goto ok;
 					return;
 				}
-				else if(strstr(cmd+3,"GPS") != NULL)
+				else if (strstr(cmd + 3, "GPS") != NULL)
 				{
-					Flag_enable_LOC_GPS_sync=1;
+					Flag_enable_LOC_GPS_sync = 1;
 					goto ok;
 					return;
 				}
@@ -651,8 +650,7 @@ void Process_GPS_Param_Cmd(char * cmd)
 				//Write the star location
 				char * p = cmd;
 
-
-				if((p=strchr(p,':')) == NULL)
+				if ((p = strchr(p, ':')) == NULL)
 					goto err;
 				p++;
 
@@ -662,20 +660,16 @@ void Process_GPS_Param_Cmd(char * cmd)
 
 					double lon = atof(p);
 
-					if((p=strchr(p,'/')) == NULL)
+					if ((p = strchr(p, '/')) == NULL)
 						goto err;
 
 					p++;
 					double lat = atof(p);
 
+					Serial_printf(pserial, "OK lon=%lf lat=%lf\r\n", lon, lat);
 
-
-					Serial_printf(pserial, "OK lon=%lf lat=%lf\r\n",
-							lon,lat);
-
-
-					geographical_location.lon=lon;
-					geographical_location.lat=lat;
+					geographical_location.lon = lon;
+					geographical_location.lat = lat;
 
 					RTCUtil_saveData(RTC_BKP_DR0,
 							(uint8_t*) &geographical_location,
@@ -692,30 +686,28 @@ void Process_GPS_Param_Cmd(char * cmd)
 					StarMap_DMS_t lat =
 					{ .d = 0, .m = 0, .s = 0 };
 
-					if(StarMap_parseDMS(p,&lon)==STARMAP_ERR)
+					if (StarMap_parseDMS(p, &lon) == STARMAP_ERR)
 						goto err;
 
-					if((p=strchr(p,'/')) == NULL)
+					if ((p = strchr(p, '/')) == NULL)
 						goto err;
 
 					p++;
 
-					if(StarMap_parseDMS(p,&lat)==STARMAP_ERR)
+					if (StarMap_parseDMS(p, &lat) == STARMAP_ERR)
 						goto err;
 
-					Serial_printf(pserial,"OK lon=%s",StarMap_ascDMS(lon));
-					Serial_printf(pserial," lat=%s\r\n",StarMap_ascDMS(lat));
+					Serial_printf(pserial, "OK lon=%s", StarMap_ascDMS(lon));
+					Serial_printf(pserial, " lat=%s\r\n", StarMap_ascDMS(lat));
 
-					geographical_location.lon=StarMap_dmsToDeg(lon);
-					geographical_location.lat=StarMap_dmsToDeg(lat);
+					geographical_location.lon = StarMap_dmsToDeg(lon);
+					geographical_location.lat = StarMap_dmsToDeg(lat);
 
 					RTCUtil_saveData(RTC_BKP_DR0,
 							(uint8_t*) &geographical_location,
 							sizeof(geographical_location));
 					StarMap_UpdateLocation(geographical_location);
 				}
-
-
 
 			}
 		}
@@ -730,15 +722,15 @@ void Process_GPS_Param_Cmd(char * cmd)
 
 		if (cmd[3] == 's') //utcs
 		{
-			if(strstr(cmd+3,"CMD") != NULL)
+			if (strstr(cmd + 3, "CMD") != NULL)
 			{
-				Flag_enable_RTC_GPS_sync=0;
+				Flag_enable_RTC_GPS_sync = 0;
 				goto ok;
 				return;
 			}
-			else if(strstr(cmd+3,"GPS") != NULL)
+			else if (strstr(cmd + 3, "GPS") != NULL)
 			{
-				Flag_enable_RTC_GPS_sync=1;
+				Flag_enable_RTC_GPS_sync = 1;
 				goto ok;
 				return;
 			}
@@ -752,11 +744,11 @@ void Process_GPS_Param_Cmd(char * cmd)
 		{
 
 			//1994-11-05T13:15:30Z
-			char * p=cmd+3;
+			char * p = cmd + 3;
 			p = strchr(p, ':') + 1;
 
 			RTC_DateTypeDef d;
-			d.Year =  atoi(p)%100;
+			d.Year = atoi(p) % 100;
 
 			p = strchr(p, '-') + 1;
 			d.Month = atoi(p);
@@ -764,21 +756,17 @@ void Process_GPS_Param_Cmd(char * cmd)
 			p = strchr(p, '-') + 1;
 			d.Date = atoi(p);
 
-
-
 			int c = (d.Month <= 2 ? 1 : 0);
 			int a = 2000 + d.Year - c;
 			int m = d.Month + 12 * c - 2;
 			d.WeekDay = (d.Date + a + a / 4 - a / 100 + a / 400 + (31 * m) / 12)
-																		% 7;
+					% 7;
 
 			d.WeekDay = d.WeekDay == 0 ? 7 : d.WeekDay;
 
 			HAL_RTC_SetDate(&hrtc, &d, RTC_FORMAT_BIN);
 
-
 			RTC_TimeTypeDef t;
-
 
 			p = strchr(p, 'T') + 1;
 
@@ -812,8 +800,7 @@ void Process_GPS_Param_Cmd(char * cmd)
 	ok: Serial_printf(pserial, "OK\r\n");
 	return;
 
-	err:
-	Serial_printf(pserial, "ERR\r\n");
+	err: Serial_printf(pserial, "ERR\r\n");
 	return;
 }
 
@@ -828,7 +815,8 @@ void Process_GPS_Cmd(char * cmd)
 		{
 			if (cmd[3] == 's') //Locs command
 			{
-				Serial_printf(pserial, Flag_enable_LOC_GPS_sync ? "GPS\r\n" : "CMD\r\n");
+				Serial_printf(pserial,
+						Flag_enable_LOC_GPS_sync ? "GPS\r\n" : "CMD\r\n");
 			}
 			else //Loc command
 			{
@@ -855,7 +843,8 @@ void Process_GPS_Cmd(char * cmd)
 
 		if (cmd[3] == 's') //utcs
 		{
-			Serial_printf(pserial, Flag_enable_RTC_GPS_sync ? "GPS\r\n" : "CMD\r\n");
+			Serial_printf(pserial,
+					Flag_enable_RTC_GPS_sync ? "GPS\r\n" : "CMD\r\n");
 		}
 		else //utc
 		{
@@ -874,7 +863,7 @@ void Process_GPS_Cmd(char * cmd)
 		Process_GPS_Param_Cmd(cmd + 1);
 	}
 
-	break;
+		break;
 	default:
 		break;
 
@@ -1059,7 +1048,7 @@ void Process_Star_Cmd(char * cmd)
 
 		}
 	}
-	break;
+		break;
 	case 'f': //Start follow enable/disable
 
 		if (cmd[1] == 'd')
@@ -1095,6 +1084,43 @@ void Process_Star_Cmd(char * cmd)
 	return;
 }
 
+void Process_Sys_Cmd(char * cmd)
+{
+
+	switch (cmd[0])
+	{
+	case 'm': //bmv command
+		if (cmd[1] == 'v')
+		{
+			Serial_printf(pserial, "%dmV\r\n", Get_BatteryMilliVolts());
+		}
+		break;
+	case 's': //bmv command
+		if (cmd[1] == 't')
+		{
+			unsigned char sysFlags = (Flag_needs_axis_flipping ? 1 : 0)
+					| (nmea_rcvr.flag_is_gps_active ? 1 : 0) << 1
+					| (nmea_location_rmc.valid == 'A' ? 1 : 0) << 2
+					| (Flag_enable_periodic_logging ? 1 : 0) << 3
+					| (Flag_enable_RTC_GPS_sync ? 1 : 0) << 4
+					| (Flag_enable_LOC_GPS_sync ? 1 : 0) << 5
+					| (Flag_authorize_axis_flipping ? 1 : 0) << 6;
+
+			Serial_printf(pserial, "%X\r\n", sysFlags);
+		}
+		break;
+
+	}
+
+	return;
+
+	ok: Serial_printf(pserial, "OK\r\n");
+	return;
+
+	err: Serial_printf(pserial, "ERR\r\n");
+	return;
+}
+
 void Process_Exec_CmdV2(char * cmd)
 {
 
@@ -1116,6 +1142,8 @@ void Process_Exec_CmdV2(char * cmd)
 		Process_Star_Cmd(cmd + 1);
 		return;
 		break;
+	case 'b':
+		Process_Sys_Cmd(cmd + 1);
 	default:
 		break;
 	}

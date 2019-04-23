@@ -84,6 +84,8 @@ void Error_Handler(void);
 #define FC_3_GPIO_Port GPIOC
 #define FC_2_Pin GPIO_PIN_1
 #define FC_2_GPIO_Port GPIOC
+#define VBATTERY_Pin GPIO_PIN_3
+#define VBATTERY_GPIO_Port GPIOC
 #define UART4_TX_GPS_Pin GPIO_PIN_0
 #define UART4_TX_GPS_GPIO_Port GPIOA
 #define UART4_RX_GPS_Pin GPIO_PIN_1

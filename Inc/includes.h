@@ -41,5 +41,7 @@
 
 #include "Arduino_HAL.h"
 
+#include "fast_golay_filter.h"
+
 
 #endif /* INCLUDES_H_ */

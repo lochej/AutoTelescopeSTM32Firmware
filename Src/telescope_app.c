@@ -4,7 +4,7 @@
  *  Created on: Nov 20, 2018
  *      Author: JLH
  */
-
+#define USE_ANALOG_INPUTS
 #if 0
 #include "telescope_app.h"
 #include "stm32l4xx_hal.h"
@@ -24,8 +24,8 @@
 
 #include "includes.h"
 
-#ifdef USE_ANALOG_LIMIT_SWITCHES
-void Process_ReadInputs();
+#ifdef USE_ANALOG_INPUTS
+void Process_ReadAnalogInputs();
 #endif
 
 void Process_Receive_Cmd();
@@ -46,6 +46,9 @@ StarMap_SkyCoords_t starCorrectionCoords;
 StarMap_EqCoords_t starEqCoords;
 
 uint16_t temperature_sensor = 0;
+
+uint16_t battery_mV=0;
+
 
 double last_h, last_d;
 
@@ -69,9 +72,9 @@ uint8_t Flag_bt_commands_passthrough = 0;
 
 uint8_t Flag_enable_star_follow = 0;
 
-#ifdef USE_ANALOG_LIMIT_SWITCHES
+#ifdef USE_ANALOG_INPUTS
 
-volatile uint8_t adc_values[3]=
+volatile uint16_t adc_values[4]=
 {	0};
 volatile uint8_t adc_new_data =0;
 
@@ -83,7 +86,7 @@ void Telescope_init()
 	RTCUtil_init();
 	TimerCycInit();
 
-#ifdef USE_ANALOG_LIMIT_SWITCHES
+#ifdef USE_ANALOG_INPUTS
 	HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED);
 #endif
 
@@ -121,8 +124,8 @@ void Telescope_run()
 	while (1)
 	{
 
-#ifdef USE_ANALOG_LIMIT_SWITCHES
-		Process_ReadInputs();
+#ifdef USE_ANALOG_INPUTS
+		Process_ReadAnalogInputs();
 #endif
 
 #if 0
@@ -237,23 +240,40 @@ void Process_Periodic_Logging()
 		}
 }
 
-#ifdef USE_ANALOG_LIMIT_SWITCHES
+#ifdef USE_ANALOG_INPUTS
 uint8_t NAMUR_conversion(uint8_t value)
 {
 	return value/80;
 }
 
-void Process_ReadInputs()
+uint16_t Get_BatteryMilliVolts()
+{
+	return battery_mV;
+}
+
+void Update_BatteryVoltage(uint16_t analogInputValue)
+{
+	static Golay_Filter_Fast_ui16 batFilter={.size=16,.insert_idx=0};
+
+	uint16_t vbat=((uint32_t)analogInputValue*7950)/3120; //Calcul de la tension en fonction de la valeur ADC
+
+	battery_mV=Golay_apply_filtering_ui16(&batFilter, vbat);
+
+}
+
+void Process_ReadAnalogInputs()
 {
 	static uint32_t ref_time=0;
 	static uint32_t ref_cyc=0;
+
+
 
 	if(millis() - ref_time >= 200)
 	{
 		ref_time=millis();
 
-		ref_cyc=*DWT_CYCCNT;
-		HAL_ADC_Start_DMA(&hadc1,adc_values,3);
+		ref_cyc=TimerCycCount();
+		HAL_ADC_Start_DMA(&hadc1,adc_values,4);
 
 #if 0
 		uint16_t adc_read=0;
@@ -270,13 +290,20 @@ void Process_ReadInputs()
 
 	if(adc_new_data)
 	{
-		ref_cyc=*DWT_CYCCNT - ref_cyc;
-		for(uint8_t i=0;i<3;i++)
+		ref_cyc=TimerCycCount() - ref_cyc;
+
+		Update_BatteryVoltage(adc_values[0]);
+
+		//Serial_printf(&Serial_STLK,"Bat Val=%d tension=%dmV\n",adc_values[0],Get_BatteryMilliVolts());
+
+
+		/*
+		for(uint8_t i=0;i<4;i++)
 		{
 			Serial_printf(&Serial_STLK,"Ch:%d Val=%d NAMUR=%d\n",i,adc_values[i], NAMUR_conversion(adc_values[i]));
 		}
 		Serial_printf(&Serial_STLK, "TIME:%ld\r\n",ref_cyc);
-
+*/
 		adc_new_data=0;
 	}
 

@@ -30,6 +30,7 @@ extern StarMap_SkyCoords_t starSkyCoords;
 extern StarMap_SkyCoords_t starCorrectionCoords;
 
 extern uint16_t temperature_sensor;
+extern uint16_t battery_mV;
 
 extern double last_h, last_d;
 
@@ -53,6 +54,7 @@ extern uint8_t blinklevel;
 extern uint8_t Flag_enable_star_follow;
 
 
+uint16_t Get_BatteryMilliVolts();
 
 void Telescope_init();
 void Telescope_run();
