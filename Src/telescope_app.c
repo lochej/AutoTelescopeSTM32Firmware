@@ -422,8 +422,18 @@ void Process_Steppers()
 		double ah = fmod(eqcoords.ah, 360) + starCorrectionCoords.ra; //Appliquer la correction d'angle
 		double dec = fmod(eqcoords.dec, 90) + starCorrectionCoords.dec;
 
+		while(ah<0)
+			ah+=360; //Make sure ah is between 0 and 360
+
+		uint8_t needsR=needsReturnedMode(ah);
 		double h = 0; //angle horaire sur le telescope compté positivement depuis la verticale vers l'ouest
 		double d = 0; //angle de l'axe déclinaison effectif (en prenant en compte le retournement) compté positivement depuis le 0 sur le telescope, pointant l'étoile polaire.
+
+		h=getRelativeAngleFromAh(ah, needsR);
+		d=getRelativeAngleFromDec(dec,needsR);
+
+#if 0
+
 		//d est négatif si il va vers la gauche (OUEST) et d est positif si il va vers la droite (EST)
 		// -90<= ah <=90
 		if ((-90 <= ah && ah <= 90) || (270 <= ah && ah < 360))
@@ -432,23 +442,30 @@ void Process_Steppers()
 			d = dec;
 			//Ah sur le telescope ne peut aller que de -90 à +90
 			//donc on est bon
-			h = ah;
+			h = ah-90;
 			//maintenant il faut revenir dans les coordonnées du telescope à partir du stopper
 			//double angle_from_stopper= ref_angle - angle_from_ref;
 		}
 		else //Ah est entre 90 et 270
 		{
-			d = -dec;
-			h = ah + 180;
+			d = 180.0 - dec; // le point de référence pour l'étoile polaire est dec=90° ra=0°
+			h = ah + 180-90;
 		}
 
-		if (h > 180)
+		while (h > 90)
 		{
-			h -= 360; //retomber dans [-180,180]
+			h -= 180; //retomber dans [0,180]
 		}
 
+		/*
 		double angle_stepper_ah = stepperAh2.ref_angle + h;
 		double angle_stepper_dec = stepperDec2.ref_angle + d;
+		*/
+#endif
+
+
+		double angle_stepper_ah = Stepper_getAbsoluteFromRelative(&stepperAh2,h);
+		double angle_stepper_dec = Stepper_getAbsoluteFromRelative(&stepperDec2,d);
 
 		if ((sign(d) != sign(last_d))) //Si la déclinaison a été changé cest a dire changé de signe alors il faut retourner !
 		{

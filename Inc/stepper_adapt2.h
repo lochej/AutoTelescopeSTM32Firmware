@@ -17,6 +17,9 @@ extern struct Stepper_t stepperAh2,stepperDec2;
 
 void Stepper_initSteppers();
 
+uint8_t needsReturnedMode(double ah);
+double getRelativeAngleFromDec(double dec,uint8_t mode_retournee);
+double getRelativeAngleFromAh(double ah,uint8_t mode_retournee);
 
 void doStepAh2(struct Stepper_t * pstepper);
 void doStepDec2(struct Stepper_t * pstepper);

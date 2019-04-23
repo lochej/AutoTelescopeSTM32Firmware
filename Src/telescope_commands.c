@@ -401,9 +401,21 @@ void Process_Axis_Cmd(char * cmd)
 		{
 			double pos = atof(cmd + 3);
 
-			//L'angle demande est en fonction du zero
-			pos = Stepper_getAbsoluteFromRelative(pstep, pos);
 
+			if(cmd[2]=='a')
+			{
+
+				pos = getRelativeAngleFromAh(pos, needsReturnedMode(pos));
+
+			}
+			else if(cmd[2]=='d')
+			{
+
+				pos = getRelativeAngleFromDec(pos, 0);
+
+			}
+
+			pos = Stepper_getAbsoluteFromRelative(pstep, pos);
 			Stepper_goTo(pstep, pos / pstep->degreesPerSteps);
 
 			Flag_enable_star_follow = 0; //Disable automatic star following.
