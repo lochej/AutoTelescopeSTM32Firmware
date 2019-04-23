@@ -176,6 +176,6 @@ double getRelativeAngleFromAh(double ah,uint8_t mode_retournee)
 	}
 	else
 	{
-		return 270-ah;
+		return ah-270;
 	}
 }
