@@ -20,6 +20,9 @@ void Stepper_initSteppers();
 uint8_t needsReturnedMode(double ah);
 double getRelativeAngleFromDec(double dec,uint8_t mode_retournee);
 double getRelativeAngleFromAh(double ah,uint8_t mode_retournee);
+double getDecAngleFromRelative(double rel,uint8_t mode_retournee);
+double getAhAngleFromRelative(double rel,uint8_t mode_retournee);
+
 
 void doStepAh2(struct Stepper_t * pstepper);
 void doStepDec2(struct Stepper_t * pstepper);

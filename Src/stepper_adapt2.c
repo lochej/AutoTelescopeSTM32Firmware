@@ -167,7 +167,7 @@ double getRelativeAngleFromDec(double dec,uint8_t mode_retournee)
 double getRelativeAngleFromAh(double ah,uint8_t mode_retournee)
 {
 
-	if( ah <0 && ah > 360)
+	if( ah <0 || ah > 360)
 		return 0;
 
 	if(mode_retournee)
@@ -177,5 +177,50 @@ double getRelativeAngleFromAh(double ah,uint8_t mode_retournee)
 	else
 	{
 		return ah-270;
+	}
+}
+
+
+/**
+ *
+ * @param ah
+ * @param mode_retournee
+ * @return
+ */
+double getAhAngleFromRelative(double rel,uint8_t mode_retournee)
+{
+
+	if( rel <-90 || rel > 90)
+		return 0;
+
+	if(mode_retournee)
+	{
+		return rel+90;
+	}
+	else
+	{
+		return rel+270;
+	}
+}
+
+/**
+ *
+ * @param rel
+ * @param mode_retournee
+ * @return
+ */
+double getDecAngleFromRelative(double rel,uint8_t mode_retournee)
+{
+
+	if( rel <-90 || rel > 90)
+		return 0;
+
+	if(mode_retournee)
+	{
+		return 90 - rel;
+	}
+	else
+	{
+		return rel + 90;
 	}
 }

@@ -548,14 +548,22 @@ void Process_Axis_Cmd(char * cmd)
 
 		struct Stepper_t * pstepper = NULL;
 
+		double relativePosDec=Stepper_getRelativePos(&stepperDec2);
+		double relativePosAh=Stepper_getRelativePos(&stepperAh2);
+
+		double ah=getAhAngleFromRelative(relativePosAh, relativePosDec >= 0);
+
+		double dec=getDecAngleFromRelative(relativePosDec, relativePosDec >= 0);
+
 		switch (cmd[1])
 		//Axis selected
 		{
 		case 'a': //Ah axis
-			pstepper = &stepperAh2;
+			Serial_printf(pserial, "%lf\r\n", ah);
 			break;
 		case 'd': //Dec axis
-			pstepper = &stepperDec2;
+
+			Serial_printf(pserial, "%lf\r\n", dec);
 			break;
 
 		default: //No stepper selected, return here
@@ -566,14 +574,10 @@ void Process_Axis_Cmd(char * cmd)
 			break;
 		}
 
-		Serial_printf(pserial, "%lf\r\n", Stepper_getRelativePos(pstepper));
 
-		switch (cmd[2])
-		//Return Format
-		{
-		default:
-			break;
-		}
+
+
+
 
 	}
 		break;
@@ -1144,6 +1148,7 @@ void Process_Exec_CmdV2(char * cmd)
 		break;
 	case 'b':
 		Process_Sys_Cmd(cmd + 1);
+		break;
 	default:
 		break;
 	}
