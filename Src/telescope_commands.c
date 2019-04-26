@@ -886,6 +886,11 @@ void Process_Star_Cmd(char * cmd)
 				StarMap_ascAngle(starSkyCoords.ra, HMS),
 				StarMap_ascAngle(starSkyCoords.dec, DMS));
 		break;
+	case 'c':
+		Serial_printf(pserial, "Corr ra=%s dec=%s\r\n",
+						StarMap_ascAngle(starCorrectionCoords.ra, HMS),
+						StarMap_ascAngle(starCorrectionCoords.dec, DMS));
+		break;
 	case 'w': //Star param write
 	{
 		char * p = NULL;
