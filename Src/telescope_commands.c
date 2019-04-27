@@ -464,20 +464,23 @@ void Process_Axis_Cmd(char * cmd)
 	case 'i': //Increment position
 	{
 
-		int steps = atoi(cmd + 2);
+		//int steps = atoi(cmd + 2);
+
+		double angle = strtod(cmd+2,NULL);
+
 
 		switch (cmd[1])
 		{
 		case 'a': //Ah axis
 
-			//Stepper_move(&stepperAh2, steps*stepperAh2.degreesPerSteps);
-			Stepper_move(&stepperAh2, steps);
+			//Stepper_move(&stepperAh2, steps);
+			Stepper_move(&stepperAh2, angle/stepperAh2.degreesPerSteps);
 
 			break;
 		case 'd': //Dec axis
 
-			//Stepper_move(&stepperDec2, steps*stepperDec2.degreesPerSteps);
-			Stepper_move(&stepperDec2, steps);
+			//Stepper_move(&stepperDec2, steps);
+			Stepper_move(&stepperDec2, angle/stepperDec2.degreesPerSteps);
 			break;
 
 		default:
