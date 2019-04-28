@@ -108,14 +108,14 @@ StarMap_Error_t StarMap_parseDMS(char * p,StarMap_DMS_t * dms)
 
 	dec.d = atoi(p);
 
-	if ((p = strchr(p, '°')) == NULL)
+	if ((p = strchr(p, 'd')) == NULL)
 		return STARMAP_ERR;
 
 	p++;
 
 	dec.m = atoi(p);
 
-	if ((p = strchr(p, '\'')) == NULL)
+	if ((p = strchr(p, 'm')) == NULL)
 		return STARMAP_ERR;
 
 	p++;
@@ -219,7 +219,7 @@ char * StarMap_ascHMS(StarMap_HMS_t hms)
 char * StarMap_ascDMS(StarMap_DMS_t dms)
 {
 	static char ascstr[32];
-	snprintf(ascstr,32,"%d°%02d'%0.3lf\"",dms.d,dms.m,dms.s);
+	snprintf(ascstr,32,"%dd%02dm%0.3lfs",dms.d,dms.m,dms.s);
 	return ascstr;
 }
 

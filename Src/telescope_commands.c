@@ -176,7 +176,7 @@ void Process_Exec_Cmd(char *cmd)
 			int a = 2000 + d.Year - c;
 			int m = d.Month + 12 * c - 2;
 			d.WeekDay = (d.Date + a + a / 4 - a / 100 + a / 400 + (31 * m) / 12)
-			% 7;
+					% 7;
 
 			d.WeekDay = d.WeekDay == 0 ? 7 : d.WeekDay;
 
@@ -218,7 +218,7 @@ void Process_Exec_Cmd(char *cmd)
 		}
 
 		if (pstep == NULL)
-		return;
+			return;
 
 		p = strchr(p, ':') + 1;
 
@@ -229,11 +229,11 @@ void Process_Exec_Cmd(char *cmd)
 		int en = atoi(p);
 
 		if (en)
-		Stepper_continuousMove(pstep, dir);
+			Stepper_continuousMove(pstep, dir);
 		//StepperTelescope_moveEnable(pstep, dir);
 		else
-		//StepperTelescope_stop(pstep);
-		Stepper_stopMove(pstep);
+			//StepperTelescope_stop(pstep);
+			Stepper_stopMove(pstep);
 
 	}
 
@@ -287,14 +287,14 @@ void Process_Exec_Cmd(char *cmd)
 		{
 
 			if (p == NULL)
-			return;
+				return;
 
 			double ra = atof(p);
 
 			p = strchr(p, '/') + 1;
 
 			if (p == NULL)
-			return;
+				return;
 
 			double dec = atof(p);
 
@@ -423,13 +423,13 @@ void Process_Axis_Cmd(char * cmd)
 			goto ok;
 
 		}
-			break;
+		break;
 		default:
 			break;
 		}
 
 	}
-		break;
+	break;
 
 	case 'c': //Calibrate axis
 	{
@@ -459,7 +459,7 @@ void Process_Axis_Cmd(char * cmd)
 		goto ok;
 
 	}
-		break;
+	break;
 
 	case 'i': //Increment position
 	{
@@ -497,7 +497,7 @@ void Process_Axis_Cmd(char * cmd)
 		goto ok;
 
 	}
-		break;
+	break;
 
 	case 'm': //Rotate axis
 	{
@@ -544,7 +544,7 @@ void Process_Axis_Cmd(char * cmd)
 		goto ok;
 
 	}
-		break;
+	break;
 
 	case 'p': //Read Position
 	{
@@ -583,7 +583,7 @@ void Process_Axis_Cmd(char * cmd)
 
 
 	}
-		break;
+	break;
 
 	case 's': //Stop axis rotation
 	{
@@ -608,7 +608,7 @@ void Process_Axis_Cmd(char * cmd)
 		goto ok;
 
 	}
-		break;
+	break;
 
 	}
 
@@ -767,7 +767,7 @@ void Process_GPS_Param_Cmd(char * cmd)
 			int a = 2000 + d.Year - c;
 			int m = d.Month + 12 * c - 2;
 			d.WeekDay = (d.Date + a + a / 4 - a / 100 + a / 400 + (31 * m) / 12)
-					% 7;
+							% 7;
 
 			d.WeekDay = d.WeekDay == 0 ? 7 : d.WeekDay;
 
@@ -870,7 +870,7 @@ void Process_GPS_Cmd(char * cmd)
 		Process_GPS_Param_Cmd(cmd + 1);
 	}
 
-		break;
+	break;
 	default:
 		break;
 
@@ -891,8 +891,8 @@ void Process_Star_Cmd(char * cmd)
 		break;
 	case 'c':
 		Serial_printf(pserial, "Corr ra=%s dec=%s\r\n",
-						StarMap_ascAngle(starCorrectionCoords.ra, HMS),
-						StarMap_ascAngle(starCorrectionCoords.dec, DMS));
+				StarMap_ascAngle(starCorrectionCoords.ra, HMS),
+				StarMap_ascAngle(starCorrectionCoords.dec, DMS));
 		break;
 	case 'w': //Star param write
 	{
@@ -934,6 +934,7 @@ void Process_Star_Cmd(char * cmd)
 				StarMap_DMS_t dec =
 				{ .d = 0, .m = 0, .s = 0 };
 
+#if 0
 				ra.h = atoi(p);
 
 				if ((p = strchr(p, 'h')) == NULL)
@@ -968,6 +969,19 @@ void Process_Star_Cmd(char * cmd)
 				p++;
 
 				dec.s = atof(p);
+#endif
+
+
+				if (StarMap_parseHMS(p, &ra) == STARMAP_ERR)
+					goto err;
+
+				if ((p = strchr(p, '/')) == NULL)
+					goto err;
+
+				p++;
+
+				if (StarMap_parseDMS(p, &dec) == STARMAP_ERR)
+					goto err;
 
 				starSkyCoords.ra = StarMap_hmsToDeg(ra);
 				starSkyCoords.dec = StarMap_dmsToDeg(dec);
@@ -1060,7 +1074,7 @@ void Process_Star_Cmd(char * cmd)
 
 		}
 	}
-		break;
+	break;
 	case 'f': //Start follow enable/disable
 
 		if (cmd[1] == 'd')
@@ -1111,12 +1125,12 @@ void Process_Sys_Cmd(char * cmd)
 		if (cmd[1] == 't')
 		{
 			unsigned char sysFlags = (Flag_needs_axis_flipping ? 1 : 0)
-					| (nmea_rcvr.flag_is_gps_active ? 1 : 0) << 1
-					| (nmea_location_rmc.valid == 'A' ? 1 : 0) << 2
-					| (Flag_enable_periodic_logging ? 1 : 0) << 3
-					| (Flag_enable_RTC_GPS_sync ? 1 : 0) << 4
-					| (Flag_enable_LOC_GPS_sync ? 1 : 0) << 5
-					| (Flag_authorize_axis_flipping ? 1 : 0) << 6;
+							| (nmea_rcvr.flag_is_gps_active ? 1 : 0) << 1
+							| (nmea_location_rmc.valid == 'A' ? 1 : 0) << 2
+							| (Flag_enable_periodic_logging ? 1 : 0) << 3
+							| (Flag_enable_RTC_GPS_sync ? 1 : 0) << 4
+							| (Flag_enable_LOC_GPS_sync ? 1 : 0) << 5
+							| (Flag_authorize_axis_flipping ? 1 : 0) << 6;
 
 			Serial_printf(pserial, "%X\r\n", sysFlags);
 		}
