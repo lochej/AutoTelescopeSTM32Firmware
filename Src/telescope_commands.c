@@ -1130,7 +1130,7 @@ void Process_Sys_Cmd(char * cmd)
 							| (Flag_enable_periodic_logging ? 1 : 0) << 3
 							| (Flag_enable_RTC_GPS_sync ? 1 : 0) << 4
 							| (Flag_enable_LOC_GPS_sync ? 1 : 0) << 5
-							| (Flag_authorize_axis_flipping ? 1 : 0) << 6;
+							| (Flag_enable_star_follow ? 1 : 0) << 6;
 
 			Serial_printf(pserial, "%X\r\n", sysFlags);
 		}
