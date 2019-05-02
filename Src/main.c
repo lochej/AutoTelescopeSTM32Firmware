@@ -45,6 +45,7 @@
 #include "rtc.h"
 #include "tim.h"
 #include "usart.h"
+#include "wwdg.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -126,6 +127,7 @@ int main(void)
   MX_TIM15_Init();
   MX_USART3_UART_Init();
   MX_ADC1_Init();
+  MX_WWDG_Init();
   /* USER CODE BEGIN 2 */
 
   //Demarrage du compteur de micro secondes.
@@ -244,6 +246,7 @@ void Error_Handler(void)
   /* User can add his own implementation to report the HAL error return state */
   while(1)
   {
+	  HAL_NVIC_SystemReset();
   }
   /* USER CODE END Error_Handler_Debug */
 }

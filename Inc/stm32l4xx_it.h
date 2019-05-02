@@ -63,6 +63,7 @@
 
 /* Exported functions prototypes ---------------------------------------------*/
 void SysTick_Handler(void);
+void WWDG_IRQHandler(void);
 void DMA1_Channel1_IRQHandler(void);
 void ADC1_IRQHandler(void);
 void TIM1_BRK_TIM15_IRQHandler(void);

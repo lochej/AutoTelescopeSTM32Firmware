@@ -34,6 +34,7 @@ void Process_Main_LED();
 void Process_Buttons();
 void Process_Steppers();
 void Process_Periodic_Logging();
+void Reset_Watchdog();
 
 struct NMEA_Receiver_struct nmea_rcvr;
 gprmc_t nmea_location_rmc;
@@ -170,6 +171,8 @@ void Telescope_run()
 		Process_Periodic_Logging();
 
 #endif
+
+		Reset_Watchdog();
 	}
 
 }
@@ -603,4 +606,12 @@ void Process_Buttons()
 		}
 
 	}
+}
+
+void Reset_Watchdog()
+{
+	if (HAL_WWDG_Refresh(&hwwdg) != HAL_OK)
+	   {
+	    Error_Handler();
+	   }
 }

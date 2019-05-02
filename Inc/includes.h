@@ -23,7 +23,7 @@
 #include "rtc.h"
 #include "tim.h"
 #include "usart.h"
-
+#include "wwdg.h"
 
 #include "uart_driver.h"
 #include "time_util.h"
